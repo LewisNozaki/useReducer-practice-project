@@ -27,7 +27,19 @@ const emailReducer = (latestState, action) => {
 };
 
 const passwordReducer = (latestState, action) => {
+  if (action.type === "USER_PW_INPUT") {
+    return {
+      value: action.val,
+      isValid: action.val.trim().length > 6
+    };
+  }
 
+  if (action.type === "INPUT_BLUR") {
+    return {
+      val: latestState.value,
+      isValid: latestState.value.trim().length > 6
+    }
+  }
 
   return {
     value: "",
@@ -36,8 +48,6 @@ const passwordReducer = (latestState, action) => {
 }
 
 const Login = ({ onLogin }) => {
-  const [enteredPassword, setEnteredPassword] = useState('');
-  const [passwordIsValid, setPasswordIsValid] = useState();
   const [formIsValid, setFormIsValid] = useState(false);
 
   // useReducer
@@ -58,7 +68,7 @@ const Login = ({ onLogin }) => {
       val: e.target.value
     });
 
-    setFormIsValid(e.target.value && enteredPassword.trim().length > 6)
+    setFormIsValid(e.target.value && passwordState.isValid)
   };
 
   const passwordChangeHandler = e => {
@@ -67,9 +77,7 @@ const Login = ({ onLogin }) => {
       val: e.target.value
     })
 
-    setEnteredPassword(e.target.value);
-
-    setFormIsValid(emailState.isValid && enteredPassword.trim().length > 6)
+    setFormIsValid(emailState.isValid && e.target.value)
   };
   
   const validateEmailHandler = () => {
@@ -78,12 +86,16 @@ const Login = ({ onLogin }) => {
     });
   };
 
-  const validatePasswordHandler = () => setPasswordIsValid(enteredPassword.trim().length > 6);
+  const validatePasswordHandler = () => {
+    dispatchPassword({
+      type: "INPUT_BLUR"
+    });
+  };
 
   const submitHandler = e => {
     e.preventDefault();
 
-    onLogin(emailState.value, enteredPassword);
+    onLogin(emailState.value, passwordState.value);
   };
 
   return (
@@ -106,14 +118,14 @@ const Login = ({ onLogin }) => {
         </div>
         <div
           className={`${styles.control} ${
-            passwordIsValid === false ? styles.invalid : ''
+            passwordState.isValid === false ? styles.invalid : ''
           }`}
         >
           <label htmlFor="password">Password</label>
           <input
             type="password"
             id="password"
-            value={enteredPassword}
+            value={passwordState.value}
             onChange={passwordChangeHandler}
             onBlur={validatePasswordHandler}
           />
