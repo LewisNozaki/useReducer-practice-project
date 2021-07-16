@@ -50,17 +50,16 @@ const passwordReducer = (latestState, action) => {
 const Login = ({ onLogin }) => {
   const [formIsValid, setFormIsValid] = useState(false);
 
-  // useReducer
-  const [emailState, dispatchEmail] = useReducer(emailReducer, {
+  let initialState = {
     value: "",
     isValid: null
-  });
+  };
 
   // useReducer
-  const [passwordState, dispatchPassword] = useReducer(passwordReducer, {
-    value: "",
-    isValid: null
-  })
+  const [emailState, dispatchEmail] = useReducer(emailReducer, initialState);
+
+  // useReducer
+  const [passwordState, dispatchPassword] = useReducer(passwordReducer, initialState);
   
   const emailChangeHandler = e => {
     dispatchEmail({
@@ -68,7 +67,7 @@ const Login = ({ onLogin }) => {
       val: e.target.value
     });
 
-    setFormIsValid(e.target.value && passwordState.isValid)
+    setFormIsValid(e.target.value.includes("@") && passwordState.isValid)
   };
 
   const passwordChangeHandler = e => {
@@ -77,7 +76,7 @@ const Login = ({ onLogin }) => {
       val: e.target.value
     })
 
-    setFormIsValid(emailState.isValid && e.target.value)
+    setFormIsValid(emailState.isValid && e.target.value.trim().length > 6)
   };
   
   const validateEmailHandler = () => {
@@ -97,7 +96,7 @@ const Login = ({ onLogin }) => {
 
     onLogin(emailState.value, passwordState.value);
   };
-
+  
   return (
     <Card className={styles.login}>
       <form onSubmit={submitHandler}>
