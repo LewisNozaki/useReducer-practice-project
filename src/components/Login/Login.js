@@ -6,9 +6,15 @@ import Button from '../UI/Button/Button';
 // Reducer function
 const emailReducer = (latestState, action) => {
   if (action.type === "USER_EMAIL_INPUT") {
+    let isValid = null;
+
+    if (action.val.length > 0 && action.val.includes("@")) {
+      isValid = true;
+    }
+
     return {
       value: action.val,
-      isValid: action.val.includes("@")
+      isValid: isValid
     };
   }
 
@@ -28,9 +34,15 @@ const emailReducer = (latestState, action) => {
 
 const passwordReducer = (latestState, action) => {
   if (action.type === "USER_PW_INPUT") {
+    let isValid = null;
+    
+    if (action.val.length > 0 && action.val.trim().length > 6) {
+      isValid = true;
+    }
+
     return {
       value: action.val,
-      isValid: action.val.trim().length > 6
+      isValid: isValid
     };
   }
 
@@ -41,6 +53,7 @@ const passwordReducer = (latestState, action) => {
     }
   }
 
+  // default return
   return {
     value: "",
     isValid: null
@@ -129,6 +142,7 @@ const Login = ({ onLogin }) => {
             passwordState.isValid === false ? styles.invalid : ''
           }`}
         >
+          {console.log(passwordState)}
           <label htmlFor="password">Password</label>
           <input
             type="password"
