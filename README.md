@@ -1,2 +1,2 @@
-# useEffect Practice Project
-A simple mock log-in / auth project that utilizes useEffect() and other ReactJS examples. 
+# useReducer Practice Project
+A simple mock log-in / auth project that utilizes useReducer() and other ReactJS examples. 
