@@ -1,4 +1,4 @@
-import React, { useState, useReducer } from 'react';
+import React, { useState, useReducer, useEffect } from 'react';
 import Card from '../UI/Card/Card';
 import styles from './Login.module.css';
 import Button from '../UI/Button/Button';
@@ -14,7 +14,7 @@ const emailReducer = (latestState, action) => {
 
   if (action.type === "INPUT_BLUR") {
     return {
-      val: latestState.value,
+      value: latestState.value,
       isValid: latestState.value.includes("@")
     }
   }
@@ -36,7 +36,7 @@ const passwordReducer = (latestState, action) => {
 
   if (action.type === "INPUT_BLUR") {
     return {
-      val: latestState.value,
+      value: latestState.value,
       isValid: latestState.value.trim().length > 6
     }
   }
@@ -47,27 +47,38 @@ const passwordReducer = (latestState, action) => {
   }
 }
 
+let initialState = {
+  value: "",
+  isValid: null
+};
+
 const Login = ({ onLogin }) => {
   const [formIsValid, setFormIsValid] = useState(false);
 
-  let initialState = {
-    value: "",
-    isValid: null
-  };
-
   // useReducer
   const [emailState, dispatchEmail] = useReducer(emailReducer, initialState);
-
-  // useReducer
   const [passwordState, dispatchPassword] = useReducer(passwordReducer, initialState);
+
+  // Object destructuring - alias assignments
+  const { isValid: emailIsValid } = emailState;
+  const { isValid: pwIsValid } = passwordState;
+
+  // useEffect
+  useEffect(() => {
+    const validityTimer = setTimeout(() => {
+      setFormIsValid(emailIsValid && pwIsValid);
+    }, 600);
+    
+    return () => {
+      clearTimeout(validityTimer);
+    };
+  }, [emailIsValid, pwIsValid]);
   
   const emailChangeHandler = e => {
     dispatchEmail({
       type: "USER_EMAIL_INPUT",
       val: e.target.value
     });
-
-    setFormIsValid(e.target.value.includes("@") && passwordState.isValid)
   };
 
   const passwordChangeHandler = e => {
@@ -75,8 +86,6 @@ const Login = ({ onLogin }) => {
       type: "USER_PW_INPUT",
       val: e.target.value
     })
-
-    setFormIsValid(emailState.isValid && e.target.value.trim().length > 6)
   };
   
   const validateEmailHandler = () => {
@@ -96,13 +105,13 @@ const Login = ({ onLogin }) => {
 
     onLogin(emailState.value, passwordState.value);
   };
-  
+
   return (
     <Card className={styles.login}>
       <form onSubmit={submitHandler}>
         <div
           className={`${styles.control} ${
-            emailState.isValid === false ? styles.invalid : ''
+            emailState.isValid === false ? styles.invalid : ""
           }`}
         >
           <label htmlFor="email">E-Mail</label>
