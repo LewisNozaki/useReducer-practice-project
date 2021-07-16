@@ -1,51 +1,50 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useReducer } from 'react';
 import Card from '../UI/Card/Card';
 import styles from './Login.module.css';
 import Button from '../UI/Button/Button';
 
+// Reducer function
+const emailReducer = (state, action) => {
+  if (action.type === "USER_EMAIL_INPUT") {
+    return {
+      value: action.val,
+      isValid: false
+    };
+  }
+};
+
 const Login = ({ onLogin }) => {
-  const [enteredEmail, setEnteredEmail] = useState('');
-  const [emailIsValid, setEmailIsValid] = useState();
   const [enteredPassword, setEnteredPassword] = useState('');
   const [passwordIsValid, setPasswordIsValid] = useState();
   const [formIsValid, setFormIsValid] = useState(false);
-  
-  // useEffect is a hook that helps you deal with code that should be executed in response to something else.
-  // Something like the component being loaded, http requests, or in this example, the email and password state changing.
-  // Those are called "side effects".
-  useEffect(() => {
-    const validityTimer = setTimeout(() => {
-      console.log("checking form validity");
-      setFormIsValid(enteredEmail.includes('@') && enteredPassword.trim().length > 6);
-    }, 600);
-    
-    // Cleanup function
-    // the cleanup functions runs before the other logic every time useEffect is called EXCEPT for the very first time when the component is rendered.
-    // In this example, because we do not want the setFormIsValid to run on every key stroke, we create a setTimeOut function to wait 5 seconds before 
-    // validation. Then, with each key stroke, we run the clearTimeOut function to restart the timer. This should result in the setFormIsValid to run
-    // at least when the user has finished typing. 
-    return () => {
-      console.log("clean up");
-      clearTimeout(validityTimer);
-    };
-  }, [enteredEmail, enteredPassword]);
+
+  // useReducer
+  const [emailState, dispatchEmail] = useReducer(emailReducer, {
+    value: "",
+    isValid: false
+  },);
   
   const emailChangeHandler = e => {
-    setEnteredEmail(e.target.value);
+    dispatchEmail({
+      type: "USER_EMAIL_INPUT",
+      val: e.target.value
+    });
   };
 
   const passwordChangeHandler = e => {
     setEnteredPassword(e.target.value);
+
+    setFormIsValid(emailState.isValid && enteredPassword.trim().length > 6)
   };
   
-  const validateEmailHandler = () => setEmailIsValid(enteredEmail.includes('@'));
+  const validateEmailHandler = () => setEmailIsValid(emailState.isValid);
 
   const validatePasswordHandler = () => setPasswordIsValid(enteredPassword.trim().length > 6);
 
   const submitHandler = e => {
     e.preventDefault();
 
-    onLogin(enteredEmail, enteredPassword);
+    onLogin(emailState.value, enteredPassword);
   };
 
   return (
@@ -53,14 +52,14 @@ const Login = ({ onLogin }) => {
       <form onSubmit={submitHandler}>
         <div
           className={`${styles.control} ${
-            emailIsValid === false ? styles.invalid : ''
+            emailState.isValid === false ? styles.invalid : ''
           }`}
         >
           <label htmlFor="email">E-Mail</label>
           <input
             type="email"
             id="email"
-            value={enteredEmail}
+            value={emailState.value}
             onChange={emailChangeHandler}
             onBlur={validateEmailHandler}
             autoComplete="off"
