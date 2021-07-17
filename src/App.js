@@ -19,9 +19,6 @@ const App = () => {
   }, [])
 
   const loginHandler = (email, password) => {
-    // We should of course check email and password
-    // But it's just a dummy / demo anyways
-
     // Saves a key-value pair to local storage when an user logs in successfully. 
     localStorage.setItem("isLoggedIn", "1");
 
