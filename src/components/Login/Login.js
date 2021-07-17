@@ -65,6 +65,7 @@ let initialState = {
   isValid: null
 };
 
+// Component
 const Login = ({ onLogin }) => {
   const [formIsValid, setFormIsValid] = useState(false);
 
