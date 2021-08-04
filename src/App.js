@@ -24,7 +24,7 @@ const App = () => {
 
     setIsLoggedIn(true);
   };
-
+  
   const logoutHandler = () => {
     // Removed the key-value pair of isLoggedIn if they press the log out button.
     localStorage.removeItem("isLoggedIn");
