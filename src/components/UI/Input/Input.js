@@ -1,12 +1,12 @@
 import React from "react";
-// import styles from "./Input.modules.css";
+import styles from "./Input.module.css";
 
-const Input = ({ type, id, value, onChange, onBlur, className, htmlFor }) => {
+const Input = ({ type, id, value, onChange, onBlur, isValid, htmlFor, label }) => {
   return (
     <div
-      className={className}
+      className={`${styles.control} ${isValid === false ? styles.invalid : ""}`}
     >
-      <label htmlFor={htmlFor}>E-Mail</label>
+      <label htmlFor={htmlFor}>{label}</label>
       <input
         type={type}
         id={id}

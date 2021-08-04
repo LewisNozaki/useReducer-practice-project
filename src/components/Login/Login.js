@@ -82,7 +82,7 @@ const Login = ({ onLogin }) => {
   useEffect(() => {
     const validityTimer = setTimeout(() => {
       setFormIsValid(emailIsValid && pwIsValid);
-    }, 600);
+    }, 300);
     
     return () => {
       clearTimeout(validityTimer);
@@ -120,51 +120,30 @@ const Login = ({ onLogin }) => {
 
     onLogin(emailState.value, passwordState.value);
   };
-
+  
   return (
     <Card className={styles.login}>
       <form onSubmit={submitHandler}>
-        {/* <div
-          className={`${styles.control} ${
-            emailState.isValid === false ? styles.invalid : ""
-          }`}
-        >
-          <label htmlFor="email">E-Mail</label>
-          <input
-            type="email"
-            id="email"
-            value={emailState.value}
-            onChange={emailChangeHandler}
-            onBlur={validateEmailHandler}
-            autoComplete="off"
-          />
-        </div> */}
         <Input 
           type="email"
           id="email"
           htmlFor="email"
+          label="E-mail"
           value={emailState.value}
           onChange={emailChangeHandler}
           onBlur={validateEmailHandler}
-          className={`${styles.control} ${
-            emailState.isValid === false ? styles.invalid : ""
-          }`}
+          isValid={emailState.isValid}
         />
-        <div
-          className={`${styles.control} ${
-            passwordState.isValid === false ? styles.invalid : ''
-          }`}
-        >
-          {console.log(passwordState)}
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            value={passwordState.value}
-            onChange={passwordChangeHandler}
-            onBlur={validatePasswordHandler}
-          />
-        </div>
+        <Input 
+          type="password"
+          id="password"
+          htmlFor="password"
+          label="Password"
+          value={passwordState.value}
+          onChange={passwordChangeHandler}
+          onBlur={validatePasswordHandler}
+          isValid={passwordState.isValid}
+        />
         <div className={styles.actions}>
           <Button type="submit" className={styles.btn} disabled={!formIsValid}>
             Login
