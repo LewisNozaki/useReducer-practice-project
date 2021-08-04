@@ -77,7 +77,7 @@ const Login = ({ onLogin }) => {
   // Object destructuring - alias assignments
   const { isValid: emailIsValid } = emailState;
   const { isValid: pwIsValid } = passwordState;
-
+  
   // useEffect
   useEffect(() => {
     const validityTimer = setTimeout(() => {
