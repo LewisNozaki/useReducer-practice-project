@@ -2,6 +2,7 @@ import React, { useState, useReducer, useEffect } from 'react';
 import Card from '../UI/Card/Card';
 import styles from './Login.module.css';
 import Button from '../UI/Button/Button';
+import Input from "../UI/Input/Input";
 
 // Reducer function
 const emailReducer = (latestState, action) => {
@@ -123,7 +124,7 @@ const Login = ({ onLogin }) => {
   return (
     <Card className={styles.login}>
       <form onSubmit={submitHandler}>
-        <div
+        {/* <div
           className={`${styles.control} ${
             emailState.isValid === false ? styles.invalid : ""
           }`}
@@ -137,7 +138,18 @@ const Login = ({ onLogin }) => {
             onBlur={validateEmailHandler}
             autoComplete="off"
           />
-        </div>
+        </div> */}
+        <Input 
+          type="email"
+          id="email"
+          htmlFor="email"
+          value={emailState.value}
+          onChange={emailChangeHandler}
+          onBlur={validateEmailHandler}
+          className={`${styles.control} ${
+            emailState.isValid === false ? styles.invalid : ""
+          }`}
+        />
         <div
           className={`${styles.control} ${
             passwordState.isValid === false ? styles.invalid : ''
